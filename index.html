@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistemas Numéricos: Guía Completa y Ejemplos Claros</title>
+
+  <!-- Tipografías Google Fonts: Plus Jakarta Sans (editorial técnico) y JetBrains Mono (cifras, potencias y bits) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Estilos editoriales personalizados -->
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Compensación de anclaje para la barra de navegación fija */
+    section[id] {
+      scroll-margin-top: 5.25rem;
+    }
+
+    /* Transición suave para paneles de pestañas */
+    @keyframes panelReveal {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tab-panel-animate {
+      animation: panelReveal 0.25s ease-out forwards;
+    }
+
+    /* Barras de desplazamiento discretas para tablas en pantallas pequeñas */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.55);
+    }
+  </style>
+</head>
+
+<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 antialiased selection:bg-indigo-600 selection:text-white">
+
+  <!-- ===================================================================== -->
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR FIJA                                     -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Identidad de la Guía -->
+        <a href="#introduccion" class="flex items-center gap-2.5 group focus:outline-none">
+          <div class="w-8 h-8 rounded-lg bg-slate-900 dark:bg-indigo-600 text-white flex items-center justify-center font-mono-code text-xs font-bold tracking-tighter shadow-sm">
+            bⁿ
+          </div>
+          <div class="leading-tight">
+            <span class="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white block">
+              Sistemas Numéricos
+            </span>
+            <span class="text-[11px] font-mono-code text-slate-500 dark:text-slate-400 hidden sm:block">
+              Guía Completa y Ejemplos Claros
+            </span>
+          </div>
+        </a>
+
+        <!-- Navegación Desktop con resaltado activo -->
+        <nav class="hidden lg:flex items-center gap-1 text-xs font-medium" aria-label="Secciones de la guía">
+          <a href="#introduccion" data-nav-link="introduccion" class="nav-item px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+            Introducción
+          </a>
+          <a href="#posicionales" data-nav-link="posicionales" class="nav-item px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+            Posicionales
+          </a>
+          <a href="#conversiones" data-nav-link="conversiones" class="nav-item px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+            Conversiones
+          </a>
+          <a href="#equivalencias" data-nav-link="equivalencias" class="nav-item px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+            Tabla 0–15
+          </a>
+          <a href="#historicos" data-nav-link="historicos" class="nav-item px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+            Históricos
+          </a>
+          <a href="#comparativa" data-nav-link="comparativa" class="nav-item px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+            Comparativa
+          </a>
+        </nav>
+
+        <!-- Interruptor discreto de tema y menú móvil -->
+        <div class="flex items-center gap-2">
+          <button
+            id="themeToggle"
+            type="button"
+            aria-label="Alternar entre Modo Claro y Modo Oscuro"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 transition-colors"
+          >
+            <!-- Icono Luna (se muestra en modo claro) -->
+            <svg id="moonIcon" class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+            <!-- Icono Sol (se muestra en modo oscuro) -->
+            <svg id="sunIcon" class="w-3.5 h-3.5 text-amber-400 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <span id="themeText">Modo Oscuro</span>
+          </button>
+
+          <button
+            id="mobileMenuToggle"
+            type="button"
+            aria-label="Abrir índice de secciones"
+            aria-expanded="false"
+            class="lg:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="7" x2="20" y2="7"></line>
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="17" x2="20" y2="17"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Menú móvil desplegable -->
+      <nav id="mobileMenu" class="hidden lg:hidden pb-3 pt-2 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 sm:grid-cols-3 gap-1 text-xs font-medium">
+        <a href="#introduccion" data-nav-link="introduccion" class="nav-item mobile-link px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400">1. Introducción</a>
+        <a href="#posicionales" data-nav-link="posicionales" class="nav-item mobile-link px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400">2. Posicionales</a>
+        <a href="#conversiones" data-nav-link="conversiones" class="nav-item mobile-link px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400">3. Conversiones</a>
+        <a href="#equivalencias" data-nav-link="equivalencias" class="nav-item mobile-link px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400">4. Tabla 0–15</a>
+        <a href="#historicos" data-nav-link="historicos" class="nav-item mobile-link px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400">5. Históricos</a>
+        <a href="#comparativa" data-nav-link="comparativa" class="nav-item mobile-link px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400">6. Comparativa</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================================================================== -->
+    <!-- 1. ENCABEZADO E INTRODUCCIÓN                                          -->
+    <!-- ===================================================================== -->
+    <section id="introduccion" class="py-14 sm:py-20 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Etiqueta editorial -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs font-mono-code text-slate-600 dark:text-slate-400 mb-6">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400"></span>
+          <span>DOCUMENTACIÓN TÉCNICA · FUNDAMENTOS DE NUMERACIÓN</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl leading-[1.15]">
+          Sistemas Numéricos: Guía Completa y Ejemplos Claros
+        </h1>
+        <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+          Una referencia estructurada para comprender cómo se representan, descomponen y traducen las cantidades en los sistemas posicionales modernos (decimal, binario, octal y hexadecimal) y en los sistemas históricos más influyentes.
+        </p>
+
+        <!-- Definición destacada -->
+        <div class="mt-10 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 p-6 sm:p-8">
+          <span class="text-xs font-mono-code font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block mb-2.5">
+            Definición Fundamental
+          </span>
+          <blockquote class="text-base sm:text-xl font-medium text-slate-800 dark:text-slate-100 leading-relaxed border-l-2 border-indigo-600 dark:border-indigo-400 pl-4 sm:pl-6">
+            «Un sistema numérico (o sistema de numeración) es un conjunto de símbolos y reglas que permiten representar y operar cantidades de forma consistente. En los sistemas posicionales, el valor de cada símbolo depende tanto del dígito como de su posición y de la base del sistema.»
+          </blockquote>
+        </div>
+
+        <!-- Tres conceptos fundamentales -->
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Concepto 1: Base -->
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono-code font-semibold text-slate-400">01 · CONCEPTO</span>
+              <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono-code text-xs font-bold text-slate-800 dark:text-slate-200">Base (b)</span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">La Base del Sistema</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Es un número entero positivo (<span class="font-mono-code text-slate-800 dark:text-slate-200">b ≥ 2</span>) que indica cuántas unidades de un orden se necesitan para formar una unidad del orden inmediato superior.
+            </p>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
+              <strong class="text-slate-800 dark:text-slate-200">Ejemplo:</strong> En base 10, 10 unidades forman 1 decena; en base 2, 2 unidades forman <span class="font-mono-code">10₂</span> (dos).
+            </div>
+          </div>
+
+          <!-- Concepto 2: Conjunto de símbolos -->
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono-code font-semibold text-slate-400">02 · CONCEPTO</span>
+              <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono-code text-xs font-bold text-slate-800 dark:text-slate-200">0 a b − 1</span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Conjunto de Símbolos</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Un sistema de base <span class="font-mono-code">b</span> emplea exactamente <span class="font-mono-code">b</span> dígitos distintos comprendidos desde <span class="font-mono-code">0</span> hasta <span class="font-mono-code">b − 1</span>. Si <span class="font-mono-code">b &gt; 10</span>, se incorporan letras (<span class="font-mono-code">A–F</span>).
+            </p>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
+              <strong class="text-slate-800 dark:text-slate-200">Ejemplo:</strong> En base 8 los dígitos válidos son <span class="font-mono-code">0, 1, 2, 3, 4, 5, 6, 7</span> (el <span class="font-mono-code">8</span> no existe como dígito).
+            </div>
+          </div>
+
+          <!-- Concepto 3: Valor Absoluto vs Valor Relativo -->
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono-code font-semibold text-slate-400">03 · CONCEPTO</span>
+              <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono-code text-xs font-bold text-slate-800 dark:text-slate-200">555₁₀</span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Valor Absoluto vs. Relativo</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              El <strong>valor absoluto</strong> es la magnitud propia del símbolo; el <strong>valor relativo</strong> es el peso que adquiere según la columna que ocupa.
+            </p>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs font-mono-code text-slate-700 dark:text-slate-300 space-y-1">
+              <div>555₁₀ → Centenas: <strong>500</strong> (5×10²)</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Decenas:&nbsp; <strong>50</strong> (5×10¹)</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Unidades: <strong>5</strong> (5×10⁰)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Importancia de la notación con subíndice -->
+        <div class="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div class="max-w-2xl">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              ¿Por qué es indispensable escribir la base como subíndice?
+            </h3>
+            <p class="mt-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Una misma secuencia de símbolos representa cantidades completamente distintas según la base en la que se interprete. El subíndice numérico al final de la cifra evita toda ambigüedad:
+            </p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5 sm:gap-3 shrink-0 font-mono-code text-center">
+            <div class="px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+              <span class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 block">101₂</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">vale <strong>5</strong> en base 10</span>
+            </div>
+            <div class="px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+              <span class="text-sm sm:text-base font-bold text-indigo-600 dark:text-indigo-400 block">101₁₀</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">vale <strong>101</strong> en base 10</span>
+            </div>
+            <div class="px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+              <span class="text-sm sm:text-base font-bold text-violet-600 dark:text-violet-400 block">101₁₆</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">vale <strong>257</strong> en base 10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 2. SISTEMAS POSICIONALES Y TEOREMA FUNDAMENTAL DE LA NUMERACIÓN (TFN) -->
+    <!-- ===================================================================== -->
+    <section id="posicionales" class="py-16 sm:py-20 bg-slate-50/60 dark:bg-slate-900/20 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono-code font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            Sección 02 · Estructura Posicional
+          </span>
+          <h2 class="mt-1.5 text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Sistemas Posicionales y el Teorema Fundamental de la Numeración
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            En todo sistema posicional, las posiciones se numeran de <strong>derecha a izquierda</strong> comenzando en <span class="font-mono-code font-semibold text-slate-800 dark:text-slate-200">i = 0</span>. Cada columna multiplica el dígito situado en ella (<span class="font-mono-code">dᵢ</span>) por la potencia correspondiente de la base (<span class="font-mono-code">bⁱ</span>).
+          </p>
+        </div>
+
+        <!-- Esquema visual de bloques posicionales + Fórmula TFN -->
+        <div class="mt-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white">Teorema Fundamental de la Numeración (TFN)</h3>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                Expresión polinómica que determina el valor exacto de cualquier número entero de <em>n</em> dígitos en base <em>b</em>:
+              </p>
+            </div>
+            <div class="px-4 py-2.5 rounded-xl border border-indigo-200 dark:border-indigo-900/80 bg-indigo-50/70 dark:bg-indigo-950/40 font-mono-code text-sm sm:text-base font-bold text-indigo-700 dark:text-indigo-300 self-start md:self-auto">
+              N = Σ d<sub>i</sub> · b<sup>i</sup>
+            </div>
+          </div>
+
+          <!-- Diagrama de bloques posicionales de izquierda a derecha (i=3 hasta i=0) -->
+          <div class="mt-6">
+            <div class="flex items-center justify-between text-[11px] font-mono-code text-slate-400 mb-3">
+              <span>← Mayor peso (Dígito más significativo)</span>
+              <span>Menor peso (Unidades: b⁰ = 1) →</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono-code">
+              <!-- Bloque i = 3 -->
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4 text-center">
+                <span class="text-[11px] text-slate-400 block">Posición i = 3</span>
+                <span class="text-lg font-bold text-slate-900 dark:text-white my-1.5 block">d₃</span>
+                <span class="inline-block px-2 py-0.5 rounded bg-indigo-100/80 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+                  Peso: b³
+                </span>
+                <span class="mt-2 pt-2 border-t border-slate-200/70 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 block">
+                  Aporte: d₃ × b³
+                </span>
+              </div>
+
+              <!-- Bloque i = 2 -->
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4 text-center">
+                <span class="text-[11px] text-slate-400 block">Posición i = 2</span>
+                <span class="text-lg font-bold text-slate-900 dark:text-white my-1.5 block">d₂</span>
+                <span class="inline-block px-2 py-0.5 rounded bg-indigo-100/80 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+                  Peso: b²
+                </span>
+                <span class="mt-2 pt-2 border-t border-slate-200/70 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 block">
+                  Aporte: d₂ × b²
+                </span>
+              </div>
+
+              <!-- Bloque i = 1 -->
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4 text-center">
+                <span class="text-[11px] text-slate-400 block">Posición i = 1</span>
+                <span class="text-lg font-bold text-slate-900 dark:text-white my-1.5 block">d₁</span>
+                <span class="inline-block px-2 py-0.5 rounded bg-indigo-100/80 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+                  Peso: b¹
+                </span>
+                <span class="mt-2 pt-2 border-t border-slate-200/70 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 block">
+                  Aporte: d₁ × b¹
+                </span>
+              </div>
+
+              <!-- Bloque i = 0 -->
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4 text-center">
+                <span class="text-[11px] text-slate-400 block">Posición i = 0</span>
+                <span class="text-lg font-bold text-slate-900 dark:text-white my-1.5 block">d₀</span>
+                <span class="inline-block px-2 py-0.5 rounded bg-emerald-100/80 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
+                  Peso: b⁰ = 1
+                </span>
+                <span class="mt-2 pt-2 border-t border-slate-200/70 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 block">
+                  Aporte: d₀ × 1
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cuatro tarjetas informativas completas -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <!-- a) DECIMAL (BASE 10) -->
+          <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                  <span class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-200/70 dark:border-indigo-800/70 text-indigo-700 dark:text-indigo-300 font-mono-code font-bold text-base flex items-center justify-center">
+                    10
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Sistema Decimal (Base 10)</h3>
+                    <p class="text-xs font-mono-code text-slate-500 dark:text-slate-400">Dígitos: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  Uso Cotidiano
+                </span>
+              </div>
+
+              <p class="mt-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Es el sistema estándar en la vida diaria, las finanzas, la ciencia y la ingeniería. Cada desplazamiento de una posición hacia la izquierda multiplica el peso del dígito por <span class="font-mono-code">10</span> (<span class="font-mono-code">1, 10, 100, 1000…</span>).
+              </p>
+
+              <!-- Ejemplo desglosado: 4.725_10 -->
+              <div class="mt-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4">
+                <span class="text-xs font-mono-code font-bold text-indigo-600 dark:text-indigo-400 block mb-2.5">
+                  EJEMPLO DESGLOSADO: 4.725₁₀
+                </span>
+                <div class="grid grid-cols-4 gap-2 text-center font-mono-code text-xs mb-3">
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">10³ = 1000</span>
+                    <strong class="text-sm text-slate-900 dark:text-white">4</strong>
+                  </div>
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">10² = 100</span>
+                    <strong class="text-sm text-slate-900 dark:text-white">7</strong>
+                  </div>
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">10¹ = 10</span>
+                    <strong class="text-sm text-slate-900 dark:text-white">2</strong>
+                  </div>
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">10⁰ = 1</span>
+                    <strong class="text-sm text-slate-900 dark:text-white">5</strong>
+                  </div>
+                </div>
+                <p class="font-mono-code text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  4.725₁₀ = (4 × 10³) + (7 × 10²) + (2 × 10¹) + (5 × 10⁰)<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 4000 + 700 + 20 + 5 = <strong>4.725₁₀</strong>
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- b) BINARIO (BASE 2) -->
+          <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                  <span class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/70 dark:border-emerald-800/70 text-emerald-700 dark:text-emerald-300 font-mono-code font-bold text-base flex items-center justify-center">
+                    2
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Sistema Binario (Base 2)</h3>
+                    <p class="text-xs font-mono-code text-slate-500 dark:text-slate-400">Dígitos (bits): 0, 1</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  Computación
+                </span>
+              </div>
+
+              <p class="mt-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Es el fundamento de la electrónica digital y la arquitectura de computadores. Cada dígito recibe el nombre de <strong>bit</strong> (<em>binary digit</em>) y corresponde físicamente a dos estados eléctricos estables: apagado (<span class="font-mono-code">0</span>) o encendido (<span class="font-mono-code">1</span>).
+              </p>
+
+              <!-- Ejemplo desglosado: 1101_2 -->
+              <div class="mt-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4">
+                <span class="text-xs font-mono-code font-bold text-emerald-600 dark:text-emerald-400 block mb-2.5">
+                  EJEMPLO DESGLOSADO: 1101₂ → BASE 10
+                </span>
+                <div class="grid grid-cols-4 gap-2 text-center font-mono-code text-xs mb-3">
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">2³ = 8</span>
+                    <strong class="text-sm text-emerald-600 dark:text-emerald-400">1</strong>
+                  </div>
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">2² = 4</span>
+                    <strong class="text-sm text-emerald-600 dark:text-emerald-400">1</strong>
+                  </div>
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">2¹ = 2</span>
+                    <strong class="text-sm text-slate-400">0</strong>
+                  </div>
+                  <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                    <span class="text-slate-400 block text-[10px]">2⁰ = 1</span>
+                    <strong class="text-sm text-emerald-600 dark:text-emerald-400">1</strong>
+                  </div>
+                </div>
+                <p class="font-mono-code text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  1101₂ = (1 × 2³) + (1 × 2²) + (0 × 2¹) + (1 × 2⁰)<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 8 + 4 + 0 + 1 = <strong>13₁₀</strong>
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- c) OCTAL (BASE 8) -->
+          <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                  <span class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-200/70 dark:border-amber-800/70 text-amber-700 dark:text-amber-300 font-mono-code font-bold text-base flex items-center justify-center">
+                    8
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Sistema Octal (Base 8)</h3>
+                    <p class="text-xs font-mono-code text-slate-500 dark:text-slate-400">Dígitos: 0, 1, 2, 3, 4, 5, 6, 7</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md text-xs font-mono-code font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  2³ = 3 bits
+                </span>
+              </div>
+
+              <p class="mt-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Como <span class="font-mono-code">8 = 2³</span>, cada dígito octal equivale exactamente a un grupo de <strong>3 bits binarios</strong>. Se emplea ampliamente para expresar permisos de acceso en sistemas Unix/Linux (por ejemplo, <span class="font-mono-code">chmod 755</span>).
+              </p>
+
+              <!-- Ejemplo desglosado: 347_8 y agrupación 011 100 111_2 -->
+              <div class="mt-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4 space-y-3">
+                <span class="text-xs font-mono-code font-bold text-amber-600 dark:text-amber-400 block">
+                  EJEMPLO DESGLOSADO: 347₈
+                </span>
+                <p class="font-mono-code text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  347₈ = (3 × 8²) + (4 × 8¹) + (7 × 8⁰)<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= (3 × 64) + (4 × 8) + (7 × 1)<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 192 + 32 + 7 = <strong>231₁₀</strong>
+                </p>
+                <div class="pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mb-1.5">Agrupación directa en bloques de 3 bits (pesos 4-2-1):</span>
+                  <div class="grid grid-cols-3 gap-2 font-mono-code text-xs text-center">
+                    <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <span class="font-bold text-amber-600 dark:text-amber-400">3₈</span> → <span class="font-semibold">011₂</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <span class="font-bold text-amber-600 dark:text-amber-400">4₈</span> → <span class="font-semibold">100₂</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <span class="font-bold text-amber-600 dark:text-amber-400">7₈</span> → <span class="font-semibold">111₂</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- d) HEXADECIMAL (BASE 16) -->
+          <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                  <span class="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 border border-violet-200/70 dark:border-violet-800/70 text-violet-700 dark:text-violet-300 font-mono-code font-bold text-base flex items-center justify-center">
+                    16
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Sistema Hexadecimal (Base 16)</h3>
+                    <p class="text-xs font-mono-code text-slate-500 dark:text-slate-400">0–9 y A(10), B(11), C(12), D(13), E(14), F(15)</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md text-xs font-mono-code font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  2⁴ = 4 bits
+                </span>
+              </div>
+
+              <p class="mt-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Como <span class="font-mono-code">16 = 2⁴</span>, cada dígito hexadecimal representa exactamente <strong>4 bits (1 nibble)</strong> y dos dígitos representan <strong>1 byte completo (8 bits)</strong>. Es el estándar para direcciones de memoria, direcciones MAC, IPv6 y colores RGB (<span class="font-mono-code">#4F46E5</span>).
+              </p>
+
+              <!-- Ejemplo desglosado: 2F_16 y agrupación 0010 1111_2 -->
+              <div class="mt-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950 p-4 space-y-3">
+                <span class="text-xs font-mono-code font-bold text-violet-600 dark:text-violet-400 block">
+                  EJEMPLO DESGLOSADO: 2F₁₆
+                </span>
+                <p class="font-mono-code text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  2F₁₆ = (2 × 16¹) + (15 × 16⁰) &nbsp;<span class="text-slate-400">[donde F = 15]</span><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 32 + 15 = <strong>47₁₀</strong>
+                </p>
+                <div class="pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mb-1.5">Agrupación directa en bloques de 4 bits o nibbles (pesos 8-4-2-1):</span>
+                  <div class="grid grid-cols-2 gap-2 font-mono-code text-xs text-center">
+                    <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <span class="font-bold text-violet-600 dark:text-violet-400">2₁₆</span> → <span class="font-semibold">0010₂</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <span class="font-bold text-violet-600 dark:text-violet-400">F₁₆ (15)</span> → <span class="font-semibold">1111₂</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 3. MÉTODOS DE CONVERSIÓN CON EJEMPLOS PASO A PASO (PESTAÑAS LIMPIAS)   -->
+    <!-- ===================================================================== -->
+    <section id="conversiones" class="py-16 sm:py-20 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono-code font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            Sección 03 · Procedimientos Aritméticos
+          </span>
+          <h2 class="mt-1.5 text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Métodos de Conversión con Ejemplos Paso a Paso
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            Selecciona cada pestaña para revisar el procedimiento exacto y los ejemplos resueltos para traducir cantidades entre los sistemas posicionales.
+          </p>
+        </div>
+
+        <!-- Contenedor de Pestañas Limpias -->
+        <div class="mt-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+          <!-- Barra de pestañas -->
+          <div role="tablist" aria-label="Métodos de conversión entre bases" class="flex flex-wrap border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60 p-2 gap-1.5">
+            <button
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panel-to-decimal"
+              data-tab-target="panel-to-decimal"
+              class="conversion-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/90 dark:border-slate-700"
+            >
+              1. Cualquier Base → Decimal
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-from-decimal"
+              data-tab-target="panel-from-decimal"
+              class="conversion-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent"
+            >
+              2. Decimal → Binario / Octal / Hex
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-bin-oct"
+              data-tab-target="panel-bin-oct"
+              class="conversion-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent"
+            >
+              3. Binario ↔ Octal (3 bits)
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-bin-hex"
+              data-tab-target="panel-bin-hex"
+              class="conversion-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent"
+            >
+              4. Binario ↔ Hexadecimal (4 bits)
+            </button>
+          </div>
+
+          <!-- PESTAÑA 1: DE CUALQUIER BASE A DECIMAL -->
+          <div id="panel-to-decimal" role="tabpanel" class="conversion-panel tab-panel-animate p-6 sm:p-8">
+            <div class="max-w-3xl">
+              <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                Método de Expansión Polinómica (Base <em>b</em> → Base 10)
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Para convertir un número desde cualquier base <span class="font-mono-code">b</span> hacia decimal, se aplica directamente el Teorema Fundamental de la Numeración: se multiplica cada dígito por <span class="font-mono-code">bⁱ</span> (siendo <span class="font-mono-code">i = 0</span> la posición derecha) y se suman todos los productos.
+              </p>
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Ejemplo A: 10110_2 -> 22_10 -->
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 p-5">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-mono-code font-bold text-emerald-600 dark:text-emerald-400">EJEMPLO A · BINARIO A DECIMAL</span>
+                  <span class="font-mono-code text-xs font-bold px-2.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">10110₂ → 22₁₀</span>
+                </div>
+
+                <div class="grid grid-cols-5 gap-1.5 text-center font-mono-code text-xs my-4">
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">2⁴ = 16</span>
+                    <strong class="text-sm">1</strong>
+                    <span class="text-[11px] text-emerald-600 dark:text-emerald-400 block mt-1">= 16</span>
+                  </div>
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">2³ = 8</span>
+                    <strong class="text-sm text-slate-400">0</strong>
+                    <span class="text-[11px] text-slate-400 block mt-1">= 0</span>
+                  </div>
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">2² = 4</span>
+                    <strong class="text-sm">1</strong>
+                    <span class="text-[11px] text-emerald-600 dark:text-emerald-400 block mt-1">= 4</span>
+                  </div>
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">2¹ = 2</span>
+                    <strong class="text-sm">1</strong>
+                    <span class="text-[11px] text-emerald-600 dark:text-emerald-400 block mt-1">= 2</span>
+                  </div>
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">2⁰ = 1</span>
+                    <strong class="text-sm text-slate-400">0</strong>
+                    <span class="text-[11px] text-slate-400 block mt-1">= 0</span>
+                  </div>
+                </div>
+
+                <div class="font-mono-code text-xs text-slate-700 dark:text-slate-300 space-y-1 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                  <div>10110₂ = (1×2⁴) + (0×2³) + (1×2²) + (1×2¹) + (0×2⁰)</div>
+                  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 16 + 0 + 4 + 2 + 0 = <strong class="text-slate-900 dark:text-white">22₁₀</strong></div>
+                </div>
+              </div>
+
+              <!-- Ejemplo B: 1A4_16 -> 420_10 -->
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 p-5">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-mono-code font-bold text-violet-600 dark:text-violet-400">EJEMPLO B · HEXADECIMAL A DECIMAL</span>
+                  <span class="font-mono-code text-xs font-bold px-2.5 py-0.5 rounded bg-violet-50 dark:bg-violet-950 text-violet-700 dark:text-violet-300">1A4₁₆ → 420₁₀</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 text-center font-mono-code text-xs my-4">
+                  <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">16² = 256</span>
+                    <strong class="text-sm">1</strong>
+                    <span class="text-[11px] text-violet-600 dark:text-violet-400 block mt-1">1 × 256 = 256</span>
+                  </div>
+                  <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">16¹ = 16</span>
+                    <strong class="text-sm">A (10)</strong>
+                    <span class="text-[11px] text-violet-600 dark:text-violet-400 block mt-1">10 × 16 = 160</span>
+                  </div>
+                  <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">16⁰ = 1</span>
+                    <strong class="text-sm">4</strong>
+                    <span class="text-[11px] text-violet-600 dark:text-violet-400 block mt-1">4 × 1 = 4</span>
+                  </div>
+                </div>
+
+                <div class="font-mono-code text-xs text-slate-700 dark:text-slate-300 space-y-1 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                  <div>1A4₁₆ = (1×16²) + (10×16¹) + (4×16⁰)</div>
+                  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 256 + 160 + 4 = <strong class="text-slate-900 dark:text-white">420₁₀</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PESTAÑA 2: DE DECIMAL A BINARIO, OCTAL O HEXADECIMAL -->
+          <div id="panel-from-decimal" role="tabpanel" class="conversion-panel hidden tab-panel-animate p-6 sm:p-8">
+            <div class="max-w-3xl">
+              <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                Método de Divisiones Sucesivas entre la Base (Base 10 → Base <em>b</em>)
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Se divide reiteradamente el número decimal entre la base destino (<span class="font-mono-code">2</span>, <span class="font-mono-code">8</span> o <span class="font-mono-code">16</span>) registrando el <strong>cociente entero</strong> y el <strong>residuo</strong> en cada paso, hasta que el cociente sea <span class="font-mono-code">0</span>. El número resultante se forma leyendo los residuos <strong>de abajo hacia arriba</strong>.
+              </p>
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <!-- Tabla limpia de divisiones: 45_10 -> 101101_2 -->
+              <div class="lg:col-span-7 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+                <table class="w-full text-left border-collapse font-mono-code text-xs sm:text-sm">
+                  <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs">
+                      <th class="py-2.5 px-3.5">División entera</th>
+                      <th class="py-2.5 px-3.5">Cociente</th>
+                      <th class="py-2.5 px-3.5">Residuo</th>
+                      <th class="py-2.5 px-3.5">Orden de lectura</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tr>
+                      <td class="py-2.5 px-3.5">45 ÷ 2</td>
+                      <td class="py-2.5 px-3.5">22</td>
+                      <td class="py-2.5 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">1</td>
+                      <td class="py-2.5 px-3.5 text-xs text-slate-400">6.º (LSB · derecha)</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2.5 px-3.5">22 ÷ 2</td>
+                      <td class="py-2.5 px-3.5">11</td>
+                      <td class="py-2.5 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">0</td>
+                      <td class="py-2.5 px-3.5 text-xs text-slate-400">5.º</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2.5 px-3.5">11 ÷ 2</td>
+                      <td class="py-2.5 px-3.5">5</td>
+                      <td class="py-2.5 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">1</td>
+                      <td class="py-2.5 px-3.5 text-xs text-slate-400">4.º</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2.5 px-3.5">5 ÷ 2</td>
+                      <td class="py-2.5 px-3.5">2</td>
+                      <td class="py-2.5 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">1</td>
+                      <td class="py-2.5 px-3.5 text-xs text-slate-400">3.º</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2.5 px-3.5">2 ÷ 2</td>
+                      <td class="py-2.5 px-3.5">1</td>
+                      <td class="py-2.5 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">0</td>
+                      <td class="py-2.5 px-3.5 text-xs text-slate-400">2.º</td>
+                    </tr>
+                    <tr class="bg-indigo-50/40 dark:bg-indigo-950/20">
+                      <td class="py-2.5 px-3.5">1 ÷ 2</td>
+                      <td class="py-2.5 px-3.5 font-bold">0 <span class="text-[10px] font-normal text-slate-400">(fin)</span></td>
+                      <td class="py-2.5 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">1</td>
+                      <td class="py-2.5 px-3.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400">↑ 1.º (MSB · izquierda)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Resumen de resultado y extensión a Octal/Hex -->
+              <div class="lg:col-span-5 space-y-4">
+                <div class="rounded-xl border border-indigo-200 dark:border-indigo-900/70 bg-indigo-50/50 dark:bg-indigo-950/30 p-5">
+                  <span class="text-xs font-mono-code font-bold text-indigo-600 dark:text-indigo-400 block mb-1">
+                    RESULTADO LEÍDO DE ABAJO HACIA ARRIBA
+                  </span>
+                  <div class="font-mono-code text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+                    45₁₀ = 101101₂
+                  </div>
+                  <p class="mt-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Comprobación: <span class="font-mono-code">32 + 0 + 8 + 4 + 0 + 1 = 45₁₀</span>.
+                  </p>
+                </div>
+
+                <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 p-4 text-xs text-slate-600 dark:text-slate-400 space-y-2">
+                  <strong class="text-slate-800 dark:text-slate-200 block">Misma regla para Octal (÷ 8) y Hexadecimal (÷ 16):</strong>
+                  <div class="font-mono-code">
+                    • 45 ÷ 8 = 5 (resto <strong>5</strong>) → 5 ÷ 8 = 0 (resto <strong>5</strong>) ⇒ <strong>55₈</strong>
+                  </div>
+                  <div class="font-mono-code">
+                    • 45 ÷ 16 = 2 (resto <strong>13 = D</strong>) → 2 ÷ 16 = 0 (resto <strong>2</strong>) ⇒ <strong>2D₁₆</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PESTAÑA 3: RELACIÓN BINARIO <-> OCTAL -->
+          <div id="panel-bin-oct" role="tabpanel" class="conversion-panel hidden tab-panel-animate p-6 sm:p-8">
+            <div class="max-w-3xl">
+              <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                Agrupación Directa en Bloques de 3 Bits (Binario ↔ Octal)
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Dado que <span class="font-mono-code">8 = 2³</span>, no es necesario pasar por decimal. Se separa la cadena binaria en grupos de <strong>3 bits desde la derecha hacia la izquierda</strong> (completando con un cero a la izquierda si el bloque final tiene 2 bits) y se evalúa cada tríada con los pesos <span class="font-mono-code">4 - 2 - 1</span>.
+              </p>
+            </div>
+
+            <!-- Ejemplo visual coloreado: 10111010_2 -> 010 111 010_2 -> 272_8 -->
+            <div class="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 p-5 sm:p-6">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                <span class="text-xs font-mono-code font-bold text-amber-600 dark:text-amber-400">
+                  EJEMPLO RESUELTO: 10111010₂ → 272₈
+                </span>
+                <span class="text-xs font-mono-code text-slate-500">
+                  Pesos internos de cada bloque: 4 · 2 · 1
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono-code text-center">
+                <!-- Bloque 1 (Izquierda): 010 -> 2 -->
+                <div class="rounded-xl border border-sky-200 dark:border-sky-900/70 bg-white dark:bg-slate-900 p-4">
+                  <span class="text-[11px] text-sky-600 dark:text-sky-400 font-semibold block mb-2">Grupo Izquierdo (3 bits)</span>
+                  <div class="inline-flex items-center gap-1.5 text-lg font-bold">
+                    <span class="w-8 h-9 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 flex items-center justify-center" title="Cero añadido a la izquierda">0</span>
+                    <span class="w-8 h-9 rounded-md bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 flex items-center justify-center">0</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400 mt-2">0 + 2 + 0 = 2</div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-lg font-extrabold text-sky-600 dark:text-sky-400">
+                    2₈
+                  </div>
+                </div>
+
+                <!-- Bloque 2 (Centro): 111 -> 7 -->
+                <div class="rounded-xl border border-amber-200 dark:border-amber-900/70 bg-white dark:bg-slate-900 p-4">
+                  <span class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold block mb-2">Grupo Central (3 bits)</span>
+                  <div class="inline-flex items-center gap-1.5 text-lg font-bold">
+                    <span class="w-8 h-9 rounded-md bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 flex items-center justify-center">1</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400 mt-2">4 + 2 + 1 = 7</div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-lg font-extrabold text-amber-600 dark:text-amber-400">
+                    7₈
+                  </div>
+                </div>
+
+                <!-- Bloque 3 (Derecha): 010 -> 2 -->
+                <div class="rounded-xl border border-emerald-200 dark:border-emerald-900/70 bg-white dark:bg-slate-900 p-4">
+                  <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold block mb-2">Grupo Derecho (3 bits)</span>
+                  <div class="inline-flex items-center gap-1.5 text-lg font-bold">
+                    <span class="w-8 h-9 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 flex items-center justify-center">0</span>
+                    <span class="w-8 h-9 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 flex items-center justify-center">0</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400 mt-2">0 + 2 + 0 = 2</div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+                    2₈
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono-code text-xs sm:text-sm">
+                <span class="text-slate-600 dark:text-slate-400">
+                  * El <span class="border border-dashed border-slate-400 px-1 rounded">0</span> inicial completa el trío izquierdo sin alterar su valor.
+                </span>
+                <span class="font-bold text-slate-900 dark:text-white">
+                  10111010₂ = 010 111 010₂ = <span class="text-amber-600 dark:text-amber-400">272₈</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PESTAÑA 4: RELACIÓN BINARIO <-> HEXADECIMAL -->
+          <div id="panel-bin-hex" role="tabpanel" class="conversion-panel hidden tab-panel-animate p-6 sm:p-8">
+            <div class="max-w-3xl">
+              <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                Agrupación Directa en Bloques de 4 Bits o Nibbles (Binario ↔ Hexadecimal)
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Dado que <span class="font-mono-code">16 = 2⁴</span>, cada bloque de <strong>4 bits (1 nibble)</strong> corresponde exactamente a un símbolo hexadecimal. Se agrupa de derecha a izquierda aplicando los pesos <span class="font-mono-code">8 - 4 - 2 - 1</span>. Para el camino inverso (Hex → Binario), basta expandir cada carácter hexadecimal a sus 4 bits.
+              </p>
+            </div>
+
+            <!-- Ejemplo visual coloreado: 11011010_2 -> 1101 1010_2 -> DA_16 -->
+            <div class="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 p-5 sm:p-6">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                <span class="text-xs font-mono-code font-bold text-violet-600 dark:text-violet-400">
+                  EJEMPLO RESUELTO: 11011010₂ → DA₁₆
+                </span>
+                <span class="text-xs font-mono-code text-slate-500">
+                  Pesos internos de cada nibble: 8 · 4 · 2 · 1
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono-code text-center">
+                <!-- Nibble Alto: 1101 -> D (13) -->
+                <div class="rounded-xl border border-violet-200 dark:border-violet-900/70 bg-white dark:bg-slate-900 p-4">
+                  <span class="text-[11px] text-violet-600 dark:text-violet-400 font-semibold block mb-2">Nibble Alto (4 bits izquierdos)</span>
+                  <div class="inline-flex items-center gap-1.5 text-lg font-bold">
+                    <span class="w-8 h-9 rounded-md bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 flex items-center justify-center">0</span>
+                    <span class="w-8 h-9 rounded-md bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 flex items-center justify-center">1</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400 mt-2">8 + 4 + 0 + 1 = 13</div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-lg font-extrabold text-violet-600 dark:text-violet-400">
+                    D₁₆ <span class="text-xs font-normal text-slate-400">(13)</span>
+                  </div>
+                </div>
+
+                <!-- Nibble Bajo: 1010 -> A (10) -->
+                <div class="rounded-xl border border-indigo-200 dark:border-indigo-900/70 bg-white dark:bg-slate-900 p-4">
+                  <span class="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold block mb-2">Nibble Bajo (4 bits derechos)</span>
+                  <div class="inline-flex items-center gap-1.5 text-lg font-bold">
+                    <span class="w-8 h-9 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 flex items-center justify-center">0</span>
+                    <span class="w-8 h-9 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 flex items-center justify-center">1</span>
+                    <span class="w-8 h-9 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 flex items-center justify-center">0</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400 mt-2">8 + 0 + 2 + 0 = 10</div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-lg font-extrabold text-indigo-600 dark:text-indigo-400">
+                    A₁₆ <span class="text-xs font-normal text-slate-400">(10)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono-code text-xs sm:text-sm">
+                <span class="text-slate-600 dark:text-slate-400">
+                  * 8 bits (1 byte) equivalen siempre a exactamente 2 dígitos hexadecimales.
+                </span>
+                <span class="font-bold text-slate-900 dark:text-white">
+                  11011010₂ = 1101 1010₂ = <span class="text-violet-600 dark:text-violet-400">DA₁₆</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 4. TABLA DE EQUIVALENCIAS (VALORES DEL 0 AL 15)                       -->
+    <!-- ===================================================================== -->
+    <section id="equivalencias" class="py-16 sm:py-20 bg-slate-50/60 dark:bg-slate-900/20 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono-code font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            Sección 04 · Correspondencia Directa (1 Nibble)
+          </span>
+          <h2 class="mt-1.5 text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Tabla de Equivalencias (Valores del 0 al 15)
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            Los primeros dieciséis enteros (<span class="font-mono-code">0</span> a <span class="font-mono-code">15</span>) cubren todas las combinaciones posibles de <strong>4 bits</strong> y permiten observar con claridad dónde ocurren los saltos de columna y cambios de alfabeto en cada sistema.
+          </p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <!-- Tabla de 16 filas -->
+          <div class="lg:col-span-8 overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <table class="w-full text-left border-collapse font-mono-code text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs">
+                  <th class="py-3 px-4 font-bold">Decimal (Base 10)</th>
+                  <th class="py-3 px-4 font-bold">Binario (4 bits, Base 2)</th>
+                  <th class="py-3 px-4 font-bold">Octal (Base 8)</th>
+                  <th class="py-3 px-4 font-bold">Hexadecimal (Base 16)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4">0</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0000</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">0</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">0</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">1</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0001</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">1</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">1</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">2</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0010</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">2</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">2</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">3</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0011</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">3</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">3</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">4</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0100</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">4</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">4</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">5</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0101</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">5</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">5</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">6</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0110</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">6</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">6</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">7</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">0111</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">7</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">7</td>
+                </tr>
+                <!-- Fila destacada: 8_10 = 10_8 -->
+                <tr class="bg-amber-50/70 dark:bg-amber-950/25 font-semibold">
+                  <td class="py-2.5 px-4">8</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1000</td>
+                  <td class="py-2.5 px-4 text-amber-700 dark:text-amber-300">10 <span class="text-[10px] font-sans font-normal opacity-80">(salto octal)</span></td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">8</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">9</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1001</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">11</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">9</td>
+                </tr>
+                <!-- Fila destacada: 10_10 = A_16 -->
+                <tr class="bg-violet-50/70 dark:bg-violet-950/25 font-semibold">
+                  <td class="py-2.5 px-4">10 <span class="text-[10px] font-sans font-normal opacity-80">(salto dec.)</span></td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1010</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">12</td>
+                  <td class="py-2.5 px-4 text-violet-700 dark:text-violet-300">A <span class="text-[10px] font-sans font-normal opacity-80">(1.ª letra)</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">11</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1011</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">13</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">B</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">12</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1100</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">14</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">C</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">13</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1101</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">15</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">D</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">14</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1110</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">16</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">E</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">15</td>
+                  <td class="py-2.5 px-4 text-emerald-600 dark:text-emerald-400">1111</td>
+                  <td class="py-2.5 px-4 text-amber-600 dark:text-amber-400">17</td>
+                  <td class="py-2.5 px-4 text-violet-600 dark:text-violet-400">F</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Notas explicativas sobre 8_10 (10_8) y 10_10 (A_16) -->
+          <aside class="lg:col-span-4 space-y-5">
+            <div class="rounded-2xl border border-amber-200 dark:border-amber-900/70 bg-white dark:bg-slate-900 p-5 sm:p-6">
+              <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 font-mono-code text-xs font-bold mb-3">
+                8₁₀ = 10₈
+              </div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white">
+                Cambio de columna en el valor 8 (Octal)
+              </h3>
+              <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                El sistema octal solo posee ocho símbolos (<span class="font-mono-code">0</span> al <span class="font-mono-code">7</span>). Al alcanzar la octava unidad, se agota el alfabeto de la primera columna y se produce un acarreo: <span class="font-mono-code">10₈</span> significa literalmente <strong>1 grupo de ocho y 0 unidades</strong> (<span class="font-mono-code">1×8¹ + 0×8⁰ = 8₁₀</span>).
+              </p>
+            </div>
+
+            <div class="rounded-2xl border border-violet-200 dark:border-violet-900/70 bg-white dark:bg-slate-900 p-5 sm:p-6">
+              <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-violet-50 dark:bg-violet-950/70 text-violet-700 dark:text-violet-300 font-mono-code text-xs font-bold mb-3">
+                10₁₀ = A₁₆
+              </div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white">
+                Aparición de letras en el valor 10 (Hexadecimal)
+              </h3>
+              <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Mientras que en base 10 la décima cantidad obliga a usar dos dígitos (<span class="font-mono-code">10₁₀</span>), en base 16 todavía existen seis valores disponibles antes de completar la base. Para evitar escribir «10» en una sola columna y confundirlo con dos dígitos, se asignan las letras <strong>A</strong> (10), <strong>B</strong> (11), <strong>C</strong> (12), <strong>D</strong> (13), <strong>E</strong> (14) y <strong>F</strong> (15).
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 5. SISTEMAS NO POSICIONALES E HISTÓRICOS                              -->
+    <!-- ===================================================================== -->
+    <section id="historicos" class="py-16 sm:py-20 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono-code font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            Sección 05 · Evolución de la Numeración
+          </span>
+          <h2 class="mt-1.5 text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Sistemas No Posicionales e Históricos
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            A diferencia de los sistemas posicionales modernos donde la ubicación determina el multiplicador, las civilizaciones antiguas emplearon reglas <strong>aditivas</strong> (sumar el valor fijo de cada glifo), <strong>sustractivas</strong> (restar si un signo menor precede a uno mayor) o <strong>posicionales vigesimales</strong> (agrupaciones de 20).
+          </p>
+        </div>
+
+        <div class="mt-10 space-y-8">
+
+          <!-- a) SISTEMA EGIPCIO -->
+          <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <span class="text-xs font-mono-code font-semibold text-amber-600 dark:text-amber-400">NO POSICIONAL · ADITIVO PURO EN BASE 10</span>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-0.5">a) Sistema Egipcio Jeroglífico</h3>
+              </div>
+              <span class="px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-mono-code text-xs text-slate-600 dark:text-slate-400">
+                Sin símbolo para el cero
+              </span>
+            </div>
+
+            <p class="mt-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-4xl">
+              En la numeración jeroglífica egipcia cada potencia de 10 posee un símbolo propio. El valor de un número se obtiene <strong>sumando todos los jeroglíficos presentes</strong>, sin que el orden espacial altere el resultado (se puede escribir de izquierda a derecha, de derecha a izquierda o en columna).
+            </p>
+
+            <!-- 5 Jeroglíficos SVG nítidos -->
+            <div class="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+              <!-- Bastón = 1 -->
+              <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                <svg class="w-8 h-10 text-amber-600 dark:text-amber-400" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="31"></line>
+                </svg>
+                <span class="font-mono-code text-sm font-bold text-slate-900 dark:text-white mt-1.5">1</span>
+                <span class="text-xs text-slate-500">Bastón (10⁰)</span>
+              </div>
+
+              <!-- Herradura = 10 -->
+              <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                <svg class="w-8 h-10 text-amber-600 dark:text-amber-400" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                  <path d="M6 31V15a6 6 0 0 1 12 0v16"></path>
+                </svg>
+                <span class="font-mono-code text-sm font-bold text-slate-900 dark:text-white mt-1.5">10</span>
+                <span class="text-xs text-slate-500">Herradura (10¹)</span>
+              </div>
+
+              <!-- Cuerda = 100 -->
+              <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                <svg class="w-8 h-10 text-amber-600 dark:text-amber-400" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <path d="M12 18c0-2.5 2-4 4-4 3 0 5 2.5 5 5.5 0 4.5-4 8-8.5 8-5.5 0-9.5-4.5-9.5-10C3 10.5 8.5 6 15 6c3.5 0 6 1.5 7 3.5"></path>
+                </svg>
+                <span class="font-mono-code text-sm font-bold text-slate-900 dark:text-white mt-1.5">100</span>
+                <span class="text-xs text-slate-500">Cuerda (10²)</span>
+              </div>
+
+              <!-- Flor de loto = 1.000 -->
+              <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                <svg class="w-8 h-10 text-amber-600 dark:text-amber-400" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="16" x2="12" y2="32"></line>
+                  <path d="M7 32h10"></path>
+                  <path d="M12 16L6 8c2-2 4.5-2 6 0 1.5-2 4-2 6 0l-6 8z"></path>
+                  <path d="M12 16L4 12"></path>
+                  <path d="M12 16l8-4"></path>
+                </svg>
+                <span class="font-mono-code text-sm font-bold text-slate-900 dark:text-white mt-1.5">1.000</span>
+                <span class="text-xs text-slate-500">Flor de loto (10³)</span>
+              </div>
+
+              <!-- Dedo = 10.000 -->
+              <div class="col-span-2 sm:col-span-1 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                <svg class="w-8 h-10 text-amber-600 dark:text-amber-400" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 31V11a3 3 0 0 1 6 0v14l3-4"></path>
+                  <line x1="9" y1="16" x2="15" y2="16"></line>
+                </svg>
+                <span class="font-mono-code text-sm font-bold text-slate-900 dark:text-white mt-1.5">10.000</span>
+                <span class="text-xs text-slate-500">Dedo (10⁴)</span>
+              </div>
+            </div>
+
+            <!-- Ejemplo ilustrado del número 1.234 -->
+            <div class="mt-6 rounded-xl border border-amber-200/80 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/15 p-5">
+              <span class="text-xs font-mono-code font-bold text-amber-700 dark:text-amber-300 block mb-3">
+                EJEMPLO ILUSTRADO: REPRESENTACIÓN DEL NÚMERO 1.234
+              </span>
+
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center">
+                <!-- 1 Flor de loto = 1000 -->
+                <div class="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                  <div class="h-10 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                    <svg class="w-7 h-9" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="16" x2="12" y2="32"></line>
+                      <path d="M7 32h10"></path>
+                      <path d="M12 16L6 8c2-2 4.5-2 6 0 1.5-2 4-2 6 0l-6 8z"></path>
+                      <path d="M12 16L4 12"></path>
+                      <path d="M12 16l8-4"></path>
+                    </svg>
+                  </div>
+                  <span class="font-mono-code text-xs font-bold block mt-1">1 × 1.000 = 1.000</span>
+                  <span class="text-[11px] text-slate-500">1 flor de loto</span>
+                </div>
+
+                <!-- 2 Cuerdas = 200 -->
+                <div class="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                  <div class="h-10 flex items-center justify-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <svg class="w-6 h-8" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                      <path d="M12 18c0-2.5 2-4 4-4 3 0 5 2.5 5 5.5 0 4.5-4 8-8.5 8-5.5 0-9.5-4.5-9.5-10C3 10.5 8.5 6 15 6c3.5 0 6 1.5 7 3.5"></path>
+                    </svg>
+                    <svg class="w-6 h-8" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                      <path d="M12 18c0-2.5 2-4 4-4 3 0 5 2.5 5 5.5 0 4.5-4 8-8.5 8-5.5 0-9.5-4.5-9.5-10C3 10.5 8.5 6 15 6c3.5 0 6 1.5 7 3.5"></path>
+                    </svg>
+                  </div>
+                  <span class="font-mono-code text-xs font-bold block mt-1">2 × 100 = 200</span>
+                  <span class="text-[11px] text-slate-500">2 cuerdas</span>
+                </div>
+
+                <!-- 3 Herraduras = 30 -->
+                <div class="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                  <div class="h-10 flex items-center justify-center gap-1 text-amber-600 dark:text-amber-400">
+                    <svg class="w-5 h-8" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                      <path d="M6 31V15a6 6 0 0 1 12 0v16"></path>
+                    </svg>
+                    <svg class="w-5 h-8" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                      <path d="M6 31V15a6 6 0 0 1 12 0v16"></path>
+                    </svg>
+                    <svg class="w-5 h-8" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                      <path d="M6 31V15a6 6 0 0 1 12 0v16"></path>
+                    </svg>
+                  </div>
+                  <span class="font-mono-code text-xs font-bold block mt-1">3 × 10 = 30</span>
+                  <span class="text-[11px] text-slate-500">3 herraduras</span>
+                </div>
+
+                <!-- 4 Bastones = 4 -->
+                <div class="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                  <div class="h-10 flex items-center justify-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <svg class="w-3 h-8" viewBox="0 0 12 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="5" x2="6" y2="31"></line></svg>
+                    <svg class="w-3 h-8" viewBox="0 0 12 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="5" x2="6" y2="31"></line></svg>
+                    <svg class="w-3 h-8" viewBox="0 0 12 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="5" x2="6" y2="31"></line></svg>
+                    <svg class="w-3 h-8" viewBox="0 0 12 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="5" x2="6" y2="31"></line></svg>
+                  </div>
+                  <span class="font-mono-code text-xs font-bold block mt-1">4 × 1 = 4</span>
+                  <span class="text-[11px] text-slate-500">4 bastones</span>
+                </div>
+              </div>
+
+              <p class="mt-3 font-mono-code text-xs text-slate-700 dark:text-slate-300 text-center sm:text-left">
+                Suma aditiva total: 1.000 + 200 + 30 + 4 = <strong>1.234</strong>
+              </p>
+            </div>
+          </article>
+
+          <!-- b) SISTEMA ROMANO -->
+          <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <span class="text-xs font-mono-code font-semibold text-rose-600 dark:text-rose-400">HÍBRIDO · ADITIVO Y SUSTRACTIVO</span>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-0.5">b) Sistema de Numeración Romano</h3>
+              </div>
+              <span class="px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-mono-code text-xs text-slate-600 dark:text-slate-400">
+                7 letras · Sin cero
+              </span>
+            </div>
+
+            <!-- Tabla de los 7 símbolos -->
+            <div class="mt-5 grid grid-cols-7 gap-2 text-center font-mono-code">
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950">
+                <span class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 block">I</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400">1</span>
+              </div>
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950">
+                <span class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 block">V</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400">5</span>
+              </div>
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950">
+                <span class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 block">X</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400">10</span>
+              </div>
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950">
+                <span class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 block">L</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400">50</span>
+              </div>
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950">
+                <span class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 block">C</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400">100</span>
+              </div>
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950">
+                <span class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 block">D</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400">500</span>
+              </div>
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950">
+                <span class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 block">M</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400">1000</span>
+              </div>
+            </div>
+
+            <!-- Reglas de suma y resta -->
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/60">
+                <strong class="text-slate-900 dark:text-white block mb-1">Regla de Suma (a la derecha):</strong>
+                Todo símbolo de igual o menor valor escrito a la derecha de otro mayor se suma (<span class="font-mono-code">VI = 5 + 1 = 6</span>). Los símbolos <span class="font-mono-code">I, X, C, M</span> pueden repetirse hasta 3 veces seguidas; <span class="font-mono-code">V, L, D</span> nunca se repiten.
+              </div>
+              <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/60">
+                <strong class="text-slate-900 dark:text-white block mb-1">Regla de Resta (a la izquierda):</strong>
+                Un símbolo menor colocado inmediatamente antes de uno mayor resta su valor. Solo existen seis parejas válidas: <span class="font-mono-code">IV (4), IX (9), XL (40), XC (90), CD (400)</span> y <span class="font-mono-code">CM (900)</span>.
+              </div>
+            </div>
+
+            <!-- Ejemplo desglosado: MCMXCIV = 1994 -->
+            <div class="mt-6 rounded-xl border border-rose-200/80 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/15 p-5">
+              <span class="text-xs font-mono-code font-bold text-rose-700 dark:text-rose-300 block mb-3">
+                EJEMPLO DESGLOSADO: MCMXCIV = 1994
+              </span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center font-mono-code text-xs mb-3">
+                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <strong class="text-base text-slate-900 dark:text-white block">M</strong>
+                  <span class="text-emerald-600 dark:text-emerald-400">1000 (aditivo)</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <strong class="text-base text-slate-900 dark:text-white block">CM</strong>
+                  <span class="text-rose-600 dark:text-rose-400">1000 − 100 = 900</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <strong class="text-base text-slate-900 dark:text-white block">XC</strong>
+                  <span class="text-rose-600 dark:text-rose-400">100 − 10 = 90</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <strong class="text-base text-slate-900 dark:text-white block">IV</strong>
+                  <span class="text-rose-600 dark:text-rose-400">5 − 1 = 4</span>
+                </div>
+              </div>
+              <p class="font-mono-code text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                MCMXCIV = 1000 + (1000 − 100) + (100 − 10) + (5 − 1) = 1000 + 900 + 90 + 4 = <strong>1994</strong>
+              </p>
+            </div>
+          </article>
+
+          <!-- c) SISTEMA MAYA -->
+          <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <span class="text-xs font-mono-code font-semibold text-teal-600 dark:text-teal-400">POSICIONAL VIGESIMAL · BASE 20 CON CERO</span>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-0.5">c) Sistema de Numeración Maya</h3>
+              </div>
+              <span class="px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-mono-code text-xs text-slate-600 dark:text-slate-400">
+                Lectura vertical (abajo → arriba)
+              </span>
+            </div>
+
+            <div class="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <!-- Columna izquierda: 3 glifos SVG + explicación de niveles -->
+              <div class="lg:col-span-7 space-y-4">
+                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  El sistema maya fue uno de los primeros en desarrollar un <strong>cero posicional</strong>. Emplea solo tres símbolos para formar cantidades del <span class="font-mono-code">0</span> al <span class="font-mono-code">19</span> dentro de cada nivel apilado verticalmente de abajo hacia arriba:
+                </p>
+
+                <!-- 3 Símbolos Mayas en SVG -->
+                <div class="grid grid-cols-3 gap-3 text-center">
+                  <!-- Concha = 0 -->
+                  <div class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                    <svg class="w-12 h-7 text-teal-600 dark:text-teal-400" viewBox="0 0 48 28" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <ellipse cx="24" cy="14" rx="17" ry="8"></ellipse>
+                      <path d="M10 14h28M18 7v14M24 6v16M30 7v14"></path>
+                    </svg>
+                    <span class="font-mono-code text-xs font-bold text-slate-900 dark:text-white mt-1.5">0</span>
+                    <span class="text-[11px] text-slate-500">Concha / Caracol</span>
+                  </div>
+
+                  <!-- Punto = 1 -->
+                  <div class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                    <svg class="w-12 h-7 text-teal-600 dark:text-teal-400" viewBox="0 0 48 28" fill="currentColor">
+                      <circle cx="24" cy="14" r="5.5"></circle>
+                    </svg>
+                    <span class="font-mono-code text-xs font-bold text-slate-900 dark:text-white mt-1.5">1</span>
+                    <span class="text-[11px] text-slate-500">Punto (máx. 4)</span>
+                  </div>
+
+                  <!-- Raya = 5 -->
+                  <div class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 flex flex-col items-center">
+                    <svg class="w-12 h-7 text-teal-600 dark:text-teal-400" viewBox="0 0 48 28" fill="currentColor">
+                      <rect x="8" y="10.5" width="32" height="7" rx="3.5"></rect>
+                    </svg>
+                    <span class="font-mono-code text-xs font-bold text-slate-900 dark:text-white mt-1.5">5</span>
+                    <span class="text-[11px] text-slate-500">Raya (máx. 3)</span>
+                  </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/60 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <strong class="text-slate-900 dark:text-white">Niveles verticales:</strong> En aritmética vigesimal pura, los niveles valen <span class="font-mono-code">20⁰ = 1</span> (Nivel 1, inferior), <span class="font-mono-code">20¹ = 20</span> (Nivel 2), <span class="font-mono-code">20² = 400</span> (Nivel 3), etc. En la variante astronómica o calendárica (<em>Cuenta Larga</em>), el tercer nivel se ajustaba a <span class="font-mono-code">18 × 20 = 360</span> días para aproximar la duración del año solar.
+                </div>
+              </div>
+
+              <!-- Columna derecha: Ejemplo ilustrado paso a paso del número 87 -->
+              <div class="lg:col-span-5 rounded-xl border border-teal-200/80 dark:border-teal-900/60 bg-teal-50/40 dark:bg-teal-950/15 p-5">
+                <span class="text-xs font-mono-code font-bold text-teal-700 dark:text-teal-300 block mb-3">
+                  EJEMPLO ILUSTRADO: EL NÚMERO 87
+                </span>
+
+                <div class="space-y-3">
+                  <!-- Nivel 2 (Superior): 4 puntos -> 4 x 20 = 80 -->
+                  <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+                    <div>
+                      <span class="text-[11px] font-mono-code font-bold text-teal-600 dark:text-teal-400 block">Nivel 2 (Superior · ×20)</span>
+                      <span class="text-xs text-slate-600 dark:text-slate-400">4 puntos = 4</span>
+                      <span class="font-mono-code text-xs font-bold text-slate-900 dark:text-white block mt-0.5">4 × 20 = 80</span>
+                    </div>
+                    <!-- SVG 4 puntos -->
+                    <div class="px-3 py-2 rounded-lg bg-teal-50/70 dark:bg-teal-950/50 border border-teal-100 dark:border-teal-900/60">
+                      <svg class="w-20 h-9 text-teal-600 dark:text-teal-400" viewBox="0 0 80 36" fill="currentColor" aria-label="Cuatro puntos mayas">
+                        <circle cx="16" cy="18" r="4.5"></circle>
+                        <circle cx="32" cy="18" r="4.5"></circle>
+                        <circle cx="48" cy="18" r="4.5"></circle>
+                        <circle cx="64" cy="18" r="4.5"></circle>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Nivel 1 (Inferior): 1 raya + 2 puntos -> 7 x 1 = 7 -->
+                  <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+                    <div>
+                      <span class="text-[11px] font-mono-code font-bold text-teal-600 dark:text-teal-400 block">Nivel 1 (Inferior · ×1)</span>
+                      <span class="text-xs text-slate-600 dark:text-slate-400">1 raya (5) + 2 puntos (2) = 7</span>
+                      <span class="font-mono-code text-xs font-bold text-slate-900 dark:text-white block mt-0.5">7 × 1 = 7</span>
+                    </div>
+                    <!-- SVG 2 puntos arriba + 1 raya abajo -->
+                    <div class="px-3 py-2 rounded-lg bg-teal-50/70 dark:bg-teal-950/50 border border-teal-100 dark:border-teal-900/60">
+                      <svg class="w-20 h-9 text-teal-600 dark:text-teal-400" viewBox="0 0 80 36" fill="currentColor" aria-label="Dos puntos y una raya maya">
+                        <circle cx="32" cy="10" r="4.2"></circle>
+                        <circle cx="48" cy="10" r="4.2"></circle>
+                        <rect x="14" y="21" width="52" height="6" rx="3"></rect>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3 pt-3 border-t border-teal-200/70 dark:border-teal-900/50 font-mono-code text-xs text-slate-800 dark:text-slate-200">
+                  Suma vertical: (4 × 20) + (7 × 1) = 80 + 7 = <strong>87</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 6. CUADRO COMPARATIVO FINAL (LOS 7 SISTEMAS PRESENTADOS)              -->
+    <!-- ===================================================================== -->
+    <section id="comparativa" class="py-16 sm:py-20 bg-slate-50/60 dark:bg-slate-900/20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono-code font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            Sección 06 · Síntesis Estructural
+          </span>
+          <h2 class="mt-1.5 text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Cuadro Comparativo Final
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            Resumen estructural de los siete sistemas numéricos estudiados a lo largo de la guía, contrastando su naturaleza posicional o aditiva, alfabeto de símbolos, existencia de cero y ámbito de aplicación.
+          </p>
+        </div>
+
+        <div class="mt-8 overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-mono-code text-xs">
+                <th class="py-3.5 px-4 font-bold">Sistema</th>
+                <th class="py-3.5 px-4 font-bold">Tipo</th>
+                <th class="py-3.5 px-4 font-bold">Base</th>
+                <th class="py-3.5 px-4 font-bold">Símbolos</th>
+                <th class="py-3.5 px-4 font-bold">Presencia de cero</th>
+                <th class="py-3.5 px-4 font-bold">Uso principal</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+              <!-- 1. Decimal -->
+              <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Decimal</td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">Posicional</td>
+                <td class="py-3.5 px-4 font-mono-code font-semibold text-indigo-600 dark:text-indigo-400">10</td>
+                <td class="py-3.5 px-4 font-mono-code text-xs">0, 1, 2, 3, 4, 5, 6, 7, 8, 9</td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-mono-code text-xs font-semibold">Sí (0)</span>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">Actividad cotidiana, comercio, ciencia e ingeniería general.</td>
+              </tr>
+
+              <!-- 2. Binario -->
+              <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Binario</td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">Posicional</td>
+                <td class="py-3.5 px-4 font-mono-code font-semibold text-emerald-600 dark:text-emerald-400">2</td>
+                <td class="py-3.5 px-4 font-mono-code text-xs">0, 1 (bits)</td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-mono-code text-xs font-semibold">Sí (0)</span>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">Electrónica digital, procesadores, memorias y lógica computacional.</td>
+              </tr>
+
+              <!-- 3. Octal -->
+              <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Octal</td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">Posicional</td>
+                <td class="py-3.5 px-4 font-mono-code font-semibold text-amber-600 dark:text-amber-400">8</td>
+                <td class="py-3.5 px-4 font-mono-code text-xs">0, 1, 2, 3, 4, 5, 6, 7</td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-mono-code text-xs font-semibold">Sí (0)</span>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">Agrupación compacta de 3 bits y permisos de archivos en Unix/Linux.</td>
+              </tr>
+
+              <!-- 4. Hexadecimal -->
+              <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Hexadecimal</td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">Posicional</td>
+                <td class="py-3.5 px-4 font-mono-code font-semibold text-violet-600 dark:text-violet-400">16</td>
+                <td class="py-3.5 px-4 font-mono-code text-xs">0–9 y A, B, C, D, E, F</td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-mono-code text-xs font-semibold">Sí (0)</span>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">Agrupación de 4 bits (nibbles), direcciones de memoria, MAC, IPv6 y colores RGB.</td>
+              </tr>
+
+              <!-- 5. Egipcio -->
+              <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Egipcio</td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">No posicional (aditivo)</td>
+                <td class="py-3.5 px-4 font-mono-code text-slate-600 dark:text-slate-300">10 (aditiva)</td>
+                <td class="py-3.5 px-4 text-xs text-slate-600 dark:text-slate-300">Jeroglíficos por potencia (bastón, herradura, cuerda, loto, dedo…)</td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono-code text-xs">No</span>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">Inscripciones monumentales, censos, impuestos y agrimensura en el Antiguo Egipto.</td>
+              </tr>
+
+              <!-- 6. Romano -->
+              <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Romano</td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">Aditivo y sustractivo</td>
+                <td class="py-3.5 px-4 font-mono-code text-slate-600 dark:text-slate-300">Híbrida (5 y 10)</td>
+                <td class="py-3.5 px-4 font-mono-code text-xs">I, V, X, L, C, D, M</td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono-code text-xs">No</span>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">Histórico en Europa; hoy usado en siglos, capítulos, relojes y numeración ordinal.</td>
+              </tr>
+
+              <!-- 7. Maya -->
+              <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Maya</td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">Posicional vigesimal</td>
+                <td class="py-3.5 px-4 font-mono-code font-semibold text-teal-600 dark:text-teal-400">20 <span class="text-[11px] font-normal text-slate-400">(18×20 cal.)</span></td>
+                <td class="py-3.5 px-4 text-xs text-slate-600 dark:text-slate-300">Concha (0), punto (1) y raya (5)</td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-mono-code text-xs font-semibold">Sí (Concha)</span>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">Astronomía, cronología calendárica (Cuenta Larga) y registro histórico mesoamericano.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- PIE DE PÁGINA                                                         -->
+  <!-- ===================================================================== -->
+  <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <div>
+        <strong class="text-slate-800 dark:text-slate-200">Sistemas Numéricos: Guía Completa y Ejemplos Claros</strong>
+        <span class="mx-2">·</span>
+        <span>Material educativo de referencia sobre fundamentos matemáticos y digitales.</span>
+      </div>
+      <a href="#introduccion" class="font-mono-code font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+        ↑ Volver al inicio
+      </a>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT: TEMA CLARO/OSCURO, NAVEGACIÓN ACTIVA Y PESTAÑAS           -->
+  <!-- ===================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Alternancia entre Modo Claro (por defecto) y Modo Oscuro
+      const htmlElement = document.documentElement;
+      const themeToggle = document.getElementById('themeToggle');
+      const moonIcon = document.getElementById('moonIcon');
+      const sunIcon = document.getElementById('sunIcon');
+      const themeText = document.getElementById('themeText');
+
+      function setTheme(dark) {
+        if (dark) {
+          htmlElement.classList.add('dark');
+          moonIcon.classList.add('hidden');
+          sunIcon.classList.remove('hidden');
+          themeText.textContent = 'Modo Claro';
+        } else {
+          htmlElement.classList.remove('dark');
+          sunIcon.classList.add('hidden');
+          moonIcon.classList.remove('hidden');
+          themeText.textContent = 'Modo Oscuro';
+        }
+      }
+
+      // Modo claro activo por defecto al cargar
+      setTheme(false);
+
+      themeToggle.addEventListener('click', () => {
+        setTheme(!htmlElement.classList.contains('dark'));
+      });
+
+      // 2. Menú móvil desplegable
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+
+      mobileMenuToggle.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.toggle('hidden');
+        mobileMenuToggle.setAttribute('aria-expanded', String(!isHidden));
+      });
+
+      document.querySelectorAll('.mobile-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // 3. Pestañas limpias para los 4 métodos de conversión
+      const tabButtons = document.querySelectorAll('.conversion-tab');
+      const tabPanels = document.querySelectorAll('.conversion-panel');
+
+      tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-tab-target');
+
+          // Actualizar estado visual y ARIA de los botones
+          tabButtons.forEach((tab) => {
+            const isSelected = tab === btn;
+            tab.setAttribute('aria-selected', String(isSelected));
+            if (isSelected) {
+              tab.className = 'conversion-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/90 dark:border-slate-700';
+            } else {
+              tab.className = 'conversion-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent';
+            }
+          });
+
+          // Mostrar el panel correspondiente
+          tabPanels.forEach((panel) => {
+            if (panel.id === targetId) {
+              panel.classList.remove('hidden');
+            } else {
+              panel.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // 4. Resaltado activo de la sección actual en la barra de navegación superior
+      const sections = document.querySelectorAll('main section[id]');
+      const navItems = document.querySelectorAll('.nav-item');
+
+      function highlightActiveSection(sectionId) {
+        navItems.forEach((item) => {
+          const isMatch = item.getAttribute('data-nav-link') === sectionId;
+          if (isMatch) {
+            item.classList.add('bg-indigo-50', 'dark:bg-indigo-950/70', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
+            item.classList.remove('text-slate-600', 'dark:text-slate-400');
+          } else {
+            item.classList.remove('bg-indigo-50', 'dark:bg-indigo-950/70', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
+            item.classList.add('text-slate-600', 'dark:text-slate-400');
+          }
+        });
+      }
+
+      const observerOptions = {
+        root: null,
+        rootMargin: '-25% 0px -60% 0px',
+        threshold: 0
+      };
+
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            highlightActiveSection(entry.target.id);
+          }
+        });
+      }, observerOptions);
+
+      sections.forEach((sec) => sectionObserver.observe(sec));
+      highlightActiveSection('introduccion');
+    });
+  </script>
+</body>
+</html>
